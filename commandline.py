@@ -15,13 +15,27 @@ def setup():
     parser.add_argument("-r", nargs="?", help="Remove the directory at directory recursive")
     parser.add_argument("--show-logs",action="store_true", help="show all logs of the program")
     return parser
+
+def ls(path="."):
+    try:
+        contents = os.listdir(path)
+        for item in contents:
+            print(item)
+    except FileNotFoundError:
+        print(f"Error: Directory '{path}' not found.")
+    except PermissionError:
+        print(f"Error: permission denied for accessing '{path}'.")
+    except Exception as e:
+        print(f"Error: {e}")
+
 def change_directory(path):
     os.chdir(path)
     print(f"directory changed to {path}")
+
 parser = setup()
 args = parser.parse_args()
 if args.command == "ls":
-    pass
+    ls(args.path)
 elif args.command == "cd":
     change_directory(args.path)
 elif args.command == "mkdir":
