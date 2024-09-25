@@ -32,6 +32,16 @@ def change_directory(path):
     os.chdir(path)
     print(f"directory changed to {path}")
 
+def make_directory(path):
+    directory = "new_directory"
+    try:
+        os.makedirs(path, exist_ok=True)
+        print(f"Directory '{directory}' created successfully.")
+    except FileExistsError:
+        print(f"Directory '{directory}' already exists.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
 parser = setup()
 args = parser.parse_args()
 if args.command == "ls":
@@ -39,7 +49,7 @@ if args.command == "ls":
 elif args.command == "cd":
     change_directory(args.path)
 elif args.command == "mkdir":
-    pass
+    make_directory(args.path)
 elif args.command == "rmdir":
     pass
 elif args.command == "rm":
