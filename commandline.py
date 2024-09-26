@@ -97,6 +97,18 @@ def find_pattern(path, pattern):
             print(file)
     else:
         print(f"No files matching pattern '{pattern}' found.")
+
+def cat(file):
+    for file_name in file:
+        try:
+            with open(file_name, "r") as file:
+                sys.stdout.write(file.read())
+        except FileNotFoundError:
+            print(f"cat: {file_name}: No such file or directory", file=sys.stderr)
+        except IsADirectoryError:
+            print(f"cat: {file_name}: Is a directory", file=sys.stderr)
+        except Exception as e:
+            print(f"cat: {file_name}: {e}", file=sys.stderr)
     
 parser = setup()
 args = parser.parse_args()
@@ -125,4 +137,4 @@ elif args.command == "mv":
 elif args.command == "find":
     find_pattern(args.path, args.pattern)
 elif args.command == "cat":
-    pass
+    cat(args.file)
