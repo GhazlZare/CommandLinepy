@@ -17,6 +17,11 @@ def setup():
     parser.add_argument("--show-logs",action="store_true", help="show all logs of the program")
     return parser
 
+def log_command(file_name = "commands.log"):
+    with open(file_name, "a") as file:
+        data = file.read()
+        print(data)
+
 def ls(path="."):
     try:
         contents = os.listdir(path)
@@ -112,6 +117,8 @@ def cat(file):
     
 parser = setup()
 args = parser.parse_args()
+cmd = " ".join(sys.argv)
+log_command(cmd)
 if args.command == "ls":
     ls(args.path)
 elif args.command == "cd":
