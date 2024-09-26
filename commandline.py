@@ -10,8 +10,8 @@ def setup():
     parser.add_argument("path", type=str, nargs="?", default=".", help="Path for commands")
     parser.add_argument("file", nargs="?", default=".", help="file for commands")
     parser.add_argument("directory", nargs="?", default=".", help="Directory to remove")
-    parser.add_argument("source", nargs="?", help="Source for commands")
-    parser.add_argument("destination", nargs="?", help="Destination for commands")
+    parser.add_argument("source",  help="Source for commands")
+    parser.add_argument("destination", help="Destination for commands")
     parser.add_argument("pattern", type=str, help="Search for files or directory for find command")
     parser.add_argument("-r", nargs="?", help="Remove the directory at directory recursive")
     parser.add_argument("--show-logs",action="store_true", help="show all logs of the program")
@@ -75,6 +75,15 @@ def copy(source, destination, recursive, force):
     else:
         print("Invalid command.")
 
+def mv(source, destination):
+    try:
+        os.rename(source, destination)
+        print(f"moved '{source}' to '{destination}' successfully.")
+    except FileNotFoundError:
+        print(f"Error: source file or directory '{source}' not found. ")
+    except PermissionError:
+        print(f"Error: permission denied for moving '{source}' to '{destination}'. ")
+
 def find_pattern(path, pattern):
     exts = list()
     for dirpath, dirs, files in os.walk(path):
@@ -109,7 +118,7 @@ elif args.command == "rm-r":
 elif args.command == "cp":
     copy(args.source, args.destination, args.recursive, args.force)
 elif args.command == "mv":
-    pass
+    mv(args.source, args.destination)
 elif args.command == "find":
     find_pattern(args.path, args.pattern)
 elif args.command == "cat":
