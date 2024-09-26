@@ -12,7 +12,7 @@ def setup():
     parser.add_argument("directory", nargs="?", default=".", help="Directory to remove")
     parser.add_argument("source", nargs="?", help="Source for commands")
     parser.add_argument("destination", nargs="?", help="Destination for commands")
-    parser.add_argument("--pattern", help="Search for files or directory for find command")
+    parser.add_argument("pattern", type=str, help="Search for files or directory for find command")
     parser.add_argument("-r", nargs="?", help="Remove the directory at directory recursive")
     parser.add_argument("--show-logs",action="store_true", help="show all logs of the program")
     return parser
@@ -60,7 +60,7 @@ def rmdir(path, recursive=False):
       print(f"Error: directory '{path}' not found. ")
     except OSError:
         print(f"Error: directory '{path}' is not empty or cannot be removed. ")
-        
+
 def copy(source, destination, recursive, force):
     if os.path.isdir(source):
         if recursive:
@@ -69,12 +69,12 @@ def copy(source, destination, recursive, force):
             print("Use -r to copy directories.")
     elif os.path.isfile(source):
         if os.path.exists(destination) and not force:
-            print("File already exist ---> Use -f to overwrite.")
+            print("File already exists ---> Use -f to overwrite.")
         else:
             shutil.copy2(source, destination)
     else:
-        print("invalid command")
-
+        print("Invalid command.")
+    
 parser = setup()
 args = parser.parse_args()
 if args.command == "ls":
@@ -87,10 +87,7 @@ elif args.command == "cd":
 elif args.command == "mkdir":
     make_directory(args.path)
 elif args.command == "rmdir":
-        if args.path:
-            rmdir(args.path, args.recursive)
-        else:
-            print("Error: 'rmdir' requires a directory path. ")
+        pass
 elif args.command == "rm":
     pass
 elif args.command == "rm-r":
@@ -100,6 +97,6 @@ elif args.command == "cp":
 elif args.command == "mv":
     pass
 elif args.command == "find":
-    pass
+    find_pattern(args.path, args.pattern)
 elif args.command == "cat":
     pass
