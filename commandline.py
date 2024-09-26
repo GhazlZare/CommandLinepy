@@ -74,6 +74,20 @@ def copy(source, destination, recursive, force):
             shutil.copy2(source, destination)
     else:
         print("Invalid command.")
+
+def find_pattern(path, pattern):
+    exts = list()
+    for dirpath, dirs, files in os.walk(path):
+        for f in files:
+            ext = f.split(".")[-1]
+            if ext == pattern:
+                exts.append(os.path.join(dirpath, f))
+    if exts:
+        print("Files found:")
+        for file in exts:
+            print(file)
+    else:
+        print(f"No files matching pattern '{pattern}' found.")
     
 parser = setup()
 args = parser.parse_args()
