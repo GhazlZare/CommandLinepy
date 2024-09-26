@@ -110,7 +110,10 @@ elif args.command == "cd":
 elif args.command == "mkdir":
     make_directory(args.path)
 elif args.command == "rmdir":
-        pass
+        if args.path:
+            rmdir(args.path, args.recursive)
+        else:
+            print("Error: 'rmdir' requires a directory path.")
 elif args.command == "rm":
     pass
 elif args.command == "rm-r":
