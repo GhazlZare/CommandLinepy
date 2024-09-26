@@ -42,6 +42,25 @@ def make_directory(path):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+def rmdir(path, recursive=False):
+    try:
+        if recursive:
+            for root, dirs, files in os.walk(path, topdown=False):
+                for file in files: 
+                    os.remove(os.path.join(root, file))
+                    for dir in dirs:
+                        os.rmdir(os.path.join(root, dir))
+                        os.rmdir(path)
+                        print(f"directory '{path}' and its contents removed successfully. ")
+                    else:
+                        os.rmdir(path)
+                        print(f"Empty directory '{path}' removed successfully. ")
+    except FileNotFoundError:
+      print(f"Error: directory '{path}' not found. ")
+    except OSError:
+        print(f"Error: directory '{path}' is not empty or cannot be removed. ")
+
+    
 parser = setup()
 args = parser.parse_args()
 if args.command == "ls":
@@ -51,7 +70,10 @@ elif args.command == "cd":
 elif args.command == "mkdir":
     make_directory(args.path)
 elif args.command == "rmdir":
-    pass
+        if args.path:
+            rmdir(args.path, args.recursive)
+        else:
+            print("Error: 'rmdir' requires a directory path. ")
 elif args.command == "rm":
     pass
 elif args.command == "rm-r":
