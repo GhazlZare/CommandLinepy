@@ -2,6 +2,7 @@ import argparse
 import sys
 import datetime
 import os
+import shutil
 
 def setup():
     parser = argparse.ArgumentParser(description="CLI")
@@ -59,8 +60,21 @@ def rmdir(path, recursive=False):
       print(f"Error: directory '{path}' not found. ")
     except OSError:
         print(f"Error: directory '{path}' is not empty or cannot be removed. ")
+        
+def copy(source, destination, recursive, force):
+    if os.path.isdir(source):
+        if recursive:
+            shutil.copytree(source, destination, dirs_exist_ok=force)
+        else:
+            print("Use -r to copy directories.")
+    elif os.path.isfile(source):
+        if os.path.exists(destination) and not force:
+            print("File already exist ---> Use -f to overwrite.")
+        else:
+            shutil.copy2(source, destination)
+    else:
+        print("invalid command")
 
-    
 parser = setup()
 args = parser.parse_args()
 if args.command == "ls":
@@ -82,7 +96,7 @@ elif args.command == "rm":
 elif args.command == "rm-r":
     pass
 elif args.command == "cp":
-    pass
+    copy(args.source, args.destination, args.recursive, args.force)
 elif args.command == "mv":
     pass
 elif args.command == "find":
