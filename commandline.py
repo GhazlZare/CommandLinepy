@@ -23,7 +23,10 @@ args = parser.parse_args()
 if args.command == "ls":
     pass
 elif args.command == "cd":
-    change_directory(args.path)
+    try:
+        change_directory(args.path)
+    except Exception as e:
+        print(e)
 elif args.command == "mkdir":
     pass
 elif args.command == "rmdir":
