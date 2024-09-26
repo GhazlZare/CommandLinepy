@@ -11,7 +11,7 @@ def setup():
     parser.add_argument("directory", nargs="?", default=".", help="Directory to remove")
     parser.add_argument("source", nargs="?", help="Source for commands")
     parser.add_argument("destination", nargs="?", help="Destination for commands")
-    parser.add_argument("--pattern", help="Search for files or directory for find command")
+    parser.add_argument("pattern", type=str, help="Search for files or directory for find command")
     parser.add_argument("-r", nargs="?", help="Remove the directory at directory recursive")
     parser.add_argument("--show-logs",action="store_true", help="show all logs of the program")
     return parser
@@ -42,6 +42,20 @@ def make_directory(path):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+def find_pattern(path, pattern):
+    exts = list()
+    for dirpath, dirs, files in os.walk(path):
+        for f in files:
+            ext = f.split(".")[-1]
+            if ext == pattern:
+                exts.append(os.path.join(dirpath, f))
+    if exts:
+        print("Files found:")
+        for file in exts:
+            print(file)
+    else:
+        print(f"No files matching pattern '{pattern}' found.")
+
 parser = setup()
 args = parser.parse_args()
 if args.command == "ls":
@@ -61,6 +75,6 @@ elif args.command == "cp":
 elif args.command == "mv":
     pass
 elif args.command == "find":
-    pass
+    find_pattern(args.path, args.pattern)
 elif args.command == "cat":
     pass
