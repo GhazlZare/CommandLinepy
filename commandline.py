@@ -66,6 +66,23 @@ def rmdir(path, recursive=False):
     except OSError:
         print(f"Error: directory '{path}' is not empty or cannot be removed. ")
 
+def rm_r(path):
+    try:
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+            print(f"Directory '{path}' and all its contents have been removed.")
+        elif os.path.isfile(path):
+            os.remove(path)
+            print(f"File '{path}' has been removed.")
+        else:
+            print(f"Error: '{path}' does not exist.")
+    except FileNotFoundError:
+        print(f"Error: directory or file '{path}' not found.")
+    except PermissionError:
+        print(f"Error: permission dened for deleting '{path}'.")
+    except Exception as e:
+        print(f"Error: '{e}'.")
+
 def copy(source, destination, recursive, force):
     if os.path.isdir(source):
         if recursive:
@@ -136,7 +153,10 @@ elif args.command == "rmdir":
 elif args.command == "rm":
     pass
 elif args.command == "rm-r":
-    pass
+    if args.path:
+        rm_r(args.path)
+    else:
+        print("Error: 'rm-r' requires a directory or file path.")
 elif args.command == "cp":
     copy(args.source, args.destination, args.recursive, args.force)
 elif args.command == "mv":
