@@ -14,13 +14,15 @@ def setup():
     parser.add_argument("destination", help="Destination for commands")
     parser.add_argument("pattern", type=str, help="Search for files or directory for find command")
     parser.add_argument("-r", nargs="?", help="Remove the directory at directory recursive")
-    parser.add_argument("--show-logs",action="store_true", help="show all logs of the program")
+    parser.add_argument("show-logs",action="store_true", help="show all logs of the program")
     return parser
 
 def log_command(file_name = "commands.log"):
     with open(file_name, "a") as file:
-        data = file.read()
-        print(data)
+        time_now = datetime.datetime.now()
+        time_now = time_now.strftime("%Y-%m-%d")
+        text = f"{cmd}: {time_now}\n"
+        file.write(text)
 
 def ls(path="."):
     try:
@@ -66,6 +68,16 @@ def rmdir(path, recursive=False):
     except OSError:
         print(f"Error: directory '{path}' is not empty or cannot be removed. ")
 
+def rm(path):
+    try:
+        if os.path.isfile(path):
+            os.remove(path)
+        else:
+            print(f"The file {path} deleted")
+    except Exception as e:
+        print(f"Error: {e}")
+    
+
 def rm_r(path):
     try:
         if os.path.isdir(path):
@@ -107,16 +119,15 @@ def mv(source, destination):
         print(f"Error: permission denied for moving '{source}' to '{destination}'. ")
 
 def find_pattern(path, pattern):
-    exts = list()
-    for dirpath, dirs, files in os.walk(path):
-        for f in files:
-            ext = f.split(".")[-1]
-            if ext == pattern:
-                exts.append(os.path.join(dirpath, f))
-    if exts:
+    result = ()
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if pattern in file:
+                result.append(os.path.join(root, file))
+    if result:
         print("Files found:")
-        for file in exts:
-            print(file)
+        for match in result:
+            print(match)
     else:
         print(f"No files matching pattern '{pattern}' found.")
 
@@ -131,6 +142,11 @@ def cat(file):
             print(f"cat: {file_name}: Is a directory", file=sys.stderr)
         except Exception as e:
             print(f"cat: {file_name}: {e}", file=sys.stderr)
+
+def load_data(file_name = "commands.log"):
+    with open(file_name, "r") as file:
+        data = file_name.read()
+    return data
     
 parser = setup()
 args = parser.parse_args()
@@ -151,7 +167,7 @@ elif args.command == "rmdir":
         else:
             print("Error: 'rmdir' requires a directory path.")
 elif args.command == "rm":
-    pass
+    rm(args.path)
 elif args.command == "rm-r":
     if args.path:
         rm_r(args.path)
@@ -165,3 +181,6 @@ elif args.command == "find":
     find_pattern(args.path, args.pattern)
 elif args.command == "cat":
     cat(args.file)
+elif args.command == "show-logs":
+    data = load_data()
+    print(data)
