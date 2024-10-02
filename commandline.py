@@ -152,35 +152,39 @@ parser = setup()
 args = parser.parse_args()
 cmd = " ".join(sys.argv)
 log_command(cmd)
-if args.command == "ls":
-    ls(args.path)
-elif args.command == "cd":
-    try:
-        change_directory(args.path)
-    except Exception as e:
-        print(e)
-elif args.command == "mkdir":
-    make_directory(args.path)
-elif args.command == "rmdir":
+
+def main():
+    if args.command == "ls":
+        ls(args.path)
+    elif args.command == "cd":
+        try:
+            change_directory(args.path)
+        except Exception as e:
+            print(e)
+    elif args.command == "mkdir":
+        make_directory(args.path)
+    elif args.command == "rmdir":
+            if args.path:
+                rmdir(args.path, args.recursive)
+            else:
+                print("Error: 'rmdir' requires a directory path.")
+    elif args.command == "rm":
+        rm(args.path)
+    elif args.command == "rm-r":
         if args.path:
-            rmdir(args.path, args.recursive)
+            rm_r(args.path)
         else:
-            print("Error: 'rmdir' requires a directory path.")
-elif args.command == "rm":
-    rm(args.path)
-elif args.command == "rm-r":
-    if args.path:
-        rm_r(args.path)
-    else:
-        print("Error: 'rm-r' requires a directory or file path.")
-elif args.command == "cp":
-    copy(args.source, args.destination, args.recursive, args.force)
-elif args.command == "mv":
-    mv(args.source, args.destination)
-elif args.command == "find":
-    find_pattern(args.path, args.pattern)
-elif args.command == "cat":
-    cat(args.file)
-elif args.command == "show-logs":
-    data = load_data()
-    print(data)
+            print("Error: 'rm-r' requires a directory or file path.")
+    elif args.command == "cp":
+        copy(args.source, args.destination, args.recursive, args.force)
+    elif args.command == "mv":
+        mv(args.source, args.destination)
+    elif args.command == "find":
+        find_pattern(args.path, args.pattern)
+    elif args.command == "cat":
+        cat(args.file)
+    elif args.command == "show-logs":
+        data = load_data()
+        print(data)
+
+__name__ == "__main__"
